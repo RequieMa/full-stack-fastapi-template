@@ -3,6 +3,10 @@ import uuid
 from pydantic import EmailStr
 from sqlmodel import Field, Relationship, SQLModel
 
+# --- [New add] 
+from tortoise import fields, models
+from pydantic import BaseModel, EmailStr
+# [New add] ---
 
 # Shared properties
 class UserBase(SQLModel):
@@ -11,33 +15,65 @@ class UserBase(SQLModel):
     is_superuser: bool = False
     full_name: str | None = Field(default=None, max_length=255)
 
+# --- [New add] 
+# class UserBase(models.Model):
+#     email: EmailStr
+#     is_active: bool = True
+#     is_superuser: bool = False
+#     full_name: str | None = None
+# [New add] ---
 
 # Properties to receive via API on creation
 class UserCreate(UserBase):
     password: str = Field(min_length=8, max_length=40)
 
+# --- [New add] 
+# class UserCreate(UserBase):
+#     password: str
+# [New add] ---
 
 class UserRegister(SQLModel):
     email: EmailStr = Field(max_length=255)
     password: str = Field(min_length=8, max_length=40)
     full_name: str | None = Field(default=None, max_length=255)
 
+# --- [New add] 
+# class UserRegister(BaseModel):
+#     email: EmailStr
+#     password: str
+#     full_name: str | None = None
+# [New add] ---
 
 # Properties to receive via API on update, all are optional
 class UserUpdate(UserBase):
     email: EmailStr | None = Field(default=None, max_length=255)  # type: ignore
     password: str | None = Field(default=None, min_length=8, max_length=40)
 
+# --- [New add] 
+# class UserUpdate(UserBase):
+#     email: EmailStr | None = None
+#     password: str | None = None
+# [New add] ---
 
 class UserUpdateMe(SQLModel):
     full_name: str | None = Field(default=None, max_length=255)
     email: EmailStr | None = Field(default=None, max_length=255)
 
+# --- [New add] 
+# class UserUpdateMe(BaseModel):
+#     full_name: str | None = None
+#     email: EmailStr | None = None
+# [New add] ---
 
 class UpdatePassword(SQLModel):
     current_password: str = Field(min_length=8, max_length=40)
     new_password: str = Field(min_length=8, max_length=40)
 
+# --- [New add] 
+# class UpdatePassword(BaseModel):
+#     current_password: str
+#     new_password: str
+# [New add] ---
 
 # Database model, database table inferred from class name
 class User(UserBase, table=True):
@@ -45,6 +81,16 @@ class User(UserBase, table=True):
     hashed_password: str
     items: list["Item"] = Relationship(back_populates="owner", cascade_delete=True)
 
+# --- [New add] 
+# class User(Model):
+#     id = fields.UUIDField(pk=True, default=uuid.uuid4)
+#     email = fields.CharField(max_length=255, unique=True, index=True)
+#     is_active = fields.BooleanField(default=True)
+#     is_superuser = fields.BooleanField(default=False)
+#     full_name = fields.CharField(max_length=255, null=True)
+#     hashed_password = fields.CharField(max_length=128)
+#     items = fields.ReverseRelation["Item"]
+# [New add] ---
 
 # Properties to return via API, id is always required
 class UserPublic(UserBase):

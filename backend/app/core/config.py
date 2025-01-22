@@ -68,6 +68,33 @@ class Settings(BaseSettings):
             path=self.POSTGRES_DB,
         )
 
+    # --- [New add] 
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def TORTOISE_DATABASE_URL(self) -> PostgresDsn:
+        return MultiHostUrl.build(
+            scheme="postgres",
+            username=self.POSTGRES_USER,
+            password=self.POSTGRES_PASSWORD,
+            host=self.POSTGRES_SERVER,
+            port=self.POSTGRES_PORT,
+            path=self.POSTGRES_DB,
+        )
+
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def TORTOISE_ORM(self) -> dict:
+        return {
+            "connections": {"default": self.DATABASE_URL},
+            "apps": {
+                "models": {
+                    "models": ["app.models", "aerich.models"],
+                    "default_connection": "default",
+                },
+            },
+        }
+    # [New add] ---
+
     SMTP_TLS: bool = True
     SMTP_SSL: bool = False
     SMTP_PORT: int = 587
