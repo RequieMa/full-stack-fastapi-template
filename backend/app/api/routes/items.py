@@ -1,5 +1,5 @@
 import uuid
-from typing import Any
+from typing import Any, Annotated
 
 from fastapi import APIRouter, HTTPException
 from sqlmodel import func, select
@@ -56,7 +56,7 @@ def read_item(session: SessionDep, current_user: CurrentUser, id: uuid.UUID) -> 
 
 @router.post("/", response_model=ItemPublic)
 def create_item(
-    *, session: SessionDep, current_user: CurrentUser, item_in: ItemCreate
+    session: SessionDep, current_user: CurrentUser, item_in: ItemCreate
 ) -> Any:
     """
     Create new item.

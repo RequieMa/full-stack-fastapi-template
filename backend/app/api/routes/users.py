@@ -51,7 +51,7 @@ def read_users(session: SessionDep, skip: int = 0, limit: int = 100) -> Any:
 @router.post(
     "/", dependencies=[Depends(get_current_active_superuser)], response_model=UserPublic
 )
-def create_user(*, session: SessionDep, user_in: UserCreate) -> Any:
+def create_user(session: SessionDep, user_in: UserCreate) -> Any:
     """
     Create new user.
     """
@@ -77,7 +77,7 @@ def create_user(*, session: SessionDep, user_in: UserCreate) -> Any:
 
 @router.patch("/me", response_model=UserPublic)
 def update_user_me(
-    *, session: SessionDep, user_in: UserUpdateMe, current_user: CurrentUser
+    session: SessionDep, user_in: UserUpdateMe, current_user: CurrentUser
 ) -> Any:
     """
     Update own user.
@@ -99,7 +99,7 @@ def update_user_me(
 
 @router.patch("/me/password", response_model=Message)
 def update_password_me(
-    *, session: SessionDep, body: UpdatePassword, current_user: CurrentUser
+    session: SessionDep, body: UpdatePassword, current_user: CurrentUser
 ) -> Any:
     """
     Update own password.

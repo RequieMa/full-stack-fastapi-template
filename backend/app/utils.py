@@ -22,7 +22,7 @@ class EmailData:
     subject: str
 
 
-def render_email_template(*, template_name: str, context: dict[str, Any]) -> str:
+def render_email_template(template_name: str, context: dict[str, Any]) -> str:
     template_str = (
         Path(__file__).parent / "email-templates" / "build" / template_name
     ).read_text()
